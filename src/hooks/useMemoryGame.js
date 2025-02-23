@@ -4,7 +4,9 @@ export const useMemoryGame = () => {
   const [characters, setCharacters] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
   const [score, setScore] = useState(0);
-  const [bestScore, setBestScore] = useState(0);
+  const [bestScore, setBestScore] = useState(() => {
+    return Number(localStorage.getItem("bestScore")) || 0;
+  });
   const [gameOver, setGameOver] = useState(false);
   const [loading, setLoading] = useState(false);
   const [previousIds, setPreviousIds] = useState(new Set());
@@ -55,6 +57,7 @@ export const useMemoryGame = () => {
       setGameOver(true);
       if (score > bestScore) {
         setBestScore(score);
+        localStorage.setItem("bestScore", score);
       }
     } else {
       setSelectedCards((prev) => [...prev, uniqueId]);
