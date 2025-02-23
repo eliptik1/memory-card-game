@@ -7,14 +7,17 @@ export const useMemoryGame = () => {
   const [bestScore, setBestScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [previousIds, setPreviousIds] = useState(new Set());
 
   const fetchCharacters = async () => {
     setLoading(true);
     try {
-      //  Create unique Pokemon IDs
       const uniqueCharacterIds = new Set();
       while (uniqueCharacterIds.size < 12) {
-        uniqueCharacterIds.add(Math.floor(Math.random() * 151) + 1);
+        const newId = Math.floor(Math.random() * 1025) + 1;
+        if (!previousIds.has(newId)) {
+          uniqueCharacterIds.add(newId);
+        }
       }
 
       const characterPromises = Array.from(uniqueCharacterIds).map((id) =>
@@ -25,12 +28,13 @@ export const useMemoryGame = () => {
 
       const results = await Promise.all(characterPromises);
       const characterData = results.map((character) => ({
-        id: `${character.id}-${Math.random()}`, // Create unique ID
+        id: `${character.id}`,
         name: character.name,
         image: character.sprites.front_default,
       }));
 
       setCharacters(characterData);
+      setPreviousIds((prev) => new Set([...prev, ...uniqueCharacterIds]));
     } catch (error) {
       console.error("An error occurred while fetching data:", error);
     } finally {
@@ -63,8 +67,16 @@ export const useMemoryGame = () => {
     setSelectedCards([]);
     setScore(0);
     setGameOver(false);
+    setPreviousIds(new Set());
     fetchCharacters();
   };
+
+  //If score reaches 12 and its multiples, fetch new series
+  useEffect(() => {
+    if (score > 0 && score % 12 === 0) {
+      fetchCharacters();
+    }
+  }, [score]);
 
   useEffect(() => {
     fetchCharacters();
