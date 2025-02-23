@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 export const useMemoryGame = () => {
   const [characters, setCharacters] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
+  const [level, setLevel] = useState(1);
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(() => {
     return Number(localStorage.getItem("bestScore")) || 0;
@@ -68,6 +69,7 @@ export const useMemoryGame = () => {
 
   const startNewGame = () => {
     setSelectedCards([]);
+    setLevel(1);
     setScore(0);
     setGameOver(false);
     setPreviousIds(new Set());
@@ -78,6 +80,7 @@ export const useMemoryGame = () => {
   useEffect(() => {
     if (score > 0 && score % 12 === 0) {
       fetchCharacters();
+      setLevel((prev) => prev + 1);
     }
   }, [score]);
 
@@ -87,6 +90,7 @@ export const useMemoryGame = () => {
 
   return {
     characters,
+    level,
     score,
     bestScore,
     gameOver,

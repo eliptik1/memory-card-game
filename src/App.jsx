@@ -7,6 +7,7 @@ import { FaGithub } from "react-icons/fa";
 function App() {
   const {
     characters,
+    level,
     score,
     bestScore,
     gameOver,
@@ -19,6 +20,7 @@ function App() {
     <div className="min-h-dvh mx-auto flex flex-col items-center bg-gradient-to-b from-[#ffdf95] to-[#fde7b4]">
       <div className="max-sm:pt-1 p-4 text-[#305a79] bg-gradient-to-b from-[#bee7ff] to-[#dbf2ff] shadow-xl w-full flex justify-center z-10">
         <GameHeader
+          level={level}
           score={score}
           bestScore={bestScore}
           onNewGame={startNewGame}
